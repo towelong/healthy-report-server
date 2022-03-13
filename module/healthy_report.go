@@ -17,12 +17,14 @@ const prefix = "https://fxgl.jx.edu.cn/"
 type HealthyReport struct {
 	StudentID string
 	SchoolID  string
+	Address   string
 }
 
-func NewHealthyReport(studentID, schoolID string) *HealthyReport {
+func NewHealthyReport(studentID, schoolID, address string) *HealthyReport {
 	return &HealthyReport{
 		StudentID: studentID,
 		SchoolID:  schoolID,
+		Address:   address,
 	}
 }
 
