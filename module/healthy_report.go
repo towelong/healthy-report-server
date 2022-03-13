@@ -47,28 +47,33 @@ func (h *HealthyReport) sign(cks []*http.Cookie) error {
 	jar.SetCookies(u, cks)
 	client.Jar = jar
 	formData := url.Values{}
-	formData.Add("province", "江西省")
-	formData.Add("city", "九江市")
-	formData.Add("district", "共青城市")
-	formData.Add("street", "青年大道79号江西农业大学南昌商学院")
+	lc, err := getLocationByAddress(h.Address)
+	if err != nil {
+		return err
+	}
+	ad := splitAddress(h.Address)
+	formData.Add("province", ad.Province)
+	formData.Add("city", ad.City)
+	formData.Add("district", ad.District)
+	formData.Add("street", ad.Street)
 	formData.Add("xszt", "0")
 	formData.Add("jkzk", "0")
 	formData.Add("jkzkxq", "")
 	formData.Add("sfgl", "1")
 	formData.Add("gldd", "")
-	formData.Add("mqtw", "江西省")
-	formData.Add("mqtwxq", "江西省")
+	formData.Add("mqtw", "0")
+	formData.Add("mqtwxq", "")
 	formData.Add("zddlwz", "江西省九江市共青城市青年大道79号江西农业大学南昌商学院")
 	formData.Add("sddlwz", "")
-	formData.Add("bprovince", "江西省")
-	formData.Add("bcity", "九江市")
-	formData.Add("bdistrict", "共青城市")
-	formData.Add("bstreet", "青年大道79号江西农业大学南昌商学院")
-	formData.Add("sprovince", "江西省")
-	formData.Add("scity", "九江市")
-	formData.Add("sdistrict", "共青城市")
-	formData.Add("lng", "115.820966")
-	formData.Add("lat", "29.167385")
+	formData.Add("bprovince", ad.Province)
+	formData.Add("bcity", ad.City)
+	formData.Add("bdistrict", ad.District)
+	formData.Add("bstreet", ad.Street)
+	formData.Add("sprovince", ad.Province)
+	formData.Add("scity", ad.City)
+	formData.Add("sdistrict", ad.District)
+	formData.Add("lng", fmt.Sprintf("%v", lc.Result.Location.Lng))
+	formData.Add("lat", fmt.Sprintf("%v", lc.Result.Location.Lat))
 	formData.Add("sfby", "1")
 	resp, err := client.PostForm(prefix+h.SchoolID+"/studentQd/saveStu", formData)
 	if err != nil {
@@ -96,7 +101,6 @@ func (h *HealthyReport) login() ([]*http.Cookie, error) {
 	var flag bool
 	doc.Find(".link-itemFa .link-item a").Each(func(i int, s *goquery.Selection) {
 		str := s.Find("div").Text()
-		fmt.Println(str)
 		if strings.TrimSpace(str) == "健康签到" {
 			flag = true
 			return
@@ -131,6 +135,7 @@ func splitAddress(address string) *AddressDetail {
 		city = s[0] + "市"
 		iteration = s[1] + "市" + s[2]
 	}
+	// 第三级有 区/县/市（县级市）
 	s = strings.Split(iteration, "市")
 	if len(s) == 2 {
 		district = s[0] + "市"
@@ -151,7 +156,6 @@ func splitAddress(address string) *AddressDetail {
 		}
 		street = iteration
 	}
-	// 第三级有 区/县/市（县级市）
 
 	return &AddressDetail{
 		Province: province,
