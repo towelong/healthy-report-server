@@ -107,3 +107,56 @@ func (h *HealthyReport) login() ([]*http.Cookie, error) {
 	}
 	return r.Request.Response.Cookies(), nil
 }
+
+type AddressDetail struct {
+	Province string `json:"province"`
+	City     string `json:"city"`
+	District string `json:"district"`
+	Street   string `json:"street"`
+}
+
+func splitAddress(address string) *AddressDetail {
+	var province, city, district, street, iteration string
+	s := strings.Split(address, "省")
+	if len(s) >= 2 {
+		province = s[0] + "省"
+		iteration = s[1]
+	}
+	s = strings.Split(iteration, "市")
+	if len(s) == 2 {
+		city = s[0] + "市"
+		iteration = s[1]
+	} else if len(s) == 3 {
+		s = strings.Split(iteration, "市")
+		city = s[0] + "市"
+		iteration = s[1] + "市" + s[2]
+	}
+	s = strings.Split(iteration, "市")
+	if len(s) == 2 {
+		district = s[0] + "市"
+		iteration = s[1]
+	}
+	if district == "" {
+		s = strings.Split(iteration, "县")
+		if len(s) >= 2 {
+			district = s[0] + "县"
+			iteration = s[1]
+		}
+		if district == "" {
+			s = strings.Split(iteration, "区")
+			if len(s) >= 2 {
+				district = s[0] + "区"
+				iteration = s[1]
+			}
+		}
+		street = iteration
+	}
+	// 第三级有 区/县/市（县级市）
+
+	return &AddressDetail{
+		Province: province,
+		City:     city,
+		District: district,
+		Street:   street,
+	}
+}
