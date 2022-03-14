@@ -10,7 +10,7 @@ import (
 	"github.com/towelong/healthy-report-server/server"
 )
 
-var wg *sync.WaitGroup
+var wg sync.WaitGroup
 
 func task() {
 	jobs := []string{"19205116", "19205118", "19205133"}
@@ -32,4 +32,5 @@ func main() {
 	s.Every(1).Day().At("07:00").Do(task)
 	s.StartAsync()
 	server.Run()
+	task()
 }
