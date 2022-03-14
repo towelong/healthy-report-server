@@ -9,4 +9,5 @@ func Run() {
 			"ping": "pong",
 		})
 	})
+	r.Run()
 }
