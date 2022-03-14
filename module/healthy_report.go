@@ -81,7 +81,7 @@ func (h *HealthyReport) sign(cks []*http.Cookie) error {
 	}
 	defer resp.Body.Close()
 	b, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(b))
+	fmt.Println(h.StudentID + " :" + string(b))
 	return nil
 }
 

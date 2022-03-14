@@ -1,0 +1,7 @@
+version: "3"
+services:
+  healthy-go:
+    container_name: healthy-go
+    build: .
+    ports:
+      - "8016:8016"
