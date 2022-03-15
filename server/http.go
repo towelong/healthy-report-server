@@ -12,24 +12,91 @@ func Run() {
 	r := gin.Default()
 	r.Use(middleware.CORS)
 	r.GET("/", func(ctx *gin.Context) {
-		err := biz.Register()
-		if err != nil {
-			return
-		}
 		ctx.JSON(200, gin.H{
 			"ping": "pong",
 		})
 	})
-	r.POST("/user", middleware.JWT, func(ctx *gin.Context) {
-		biz.Register()
+
+	r.POST("/login", func(ctx *gin.Context) {
+		var u biz.User
+		if err := ctx.ShouldBindJSON(&u); err != nil {
+			if u.Username == "" || u.Password == "" {
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"code": 400,
+					"msg":  "用户名或密码未填写",
+				})
+			}
+			return
+		}
+		token, err := biz.Login(u)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": 400,
+				"msg":  err.Error(),
+			})
+			return
+		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"token": "",
+			"token": token,
 		})
 	})
-	r.POST("/infomation", middleware.JWT, func(ctx *gin.Context) {
+
+	r.POST("/register", func(ctx *gin.Context) {
+		var u biz.User
+		if err := ctx.ShouldBindJSON(&u); err != nil {
+			if u.Username == "" || u.Password == "" {
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"code": 400,
+					"msg":  "用户名或密码未填写",
+				})
+			}
+			return
+		}
+		err := biz.Register(u)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": 400,
+				"msg":  err.Error(),
+			})
+			return
+		}
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 0,
-			"msg":  "上传信息成功",
+			"msg":  "注册成功",
+		})
+	})
+
+	r.POST("/information", middleware.JWT, func(ctx *gin.Context) {
+		var t = &biz.Task{}
+		if err := ctx.ShouldBindJSON(t); err != nil {
+			if t.UserID == 0 || t.SchoolID == "" || t.StudentID == "" {
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"code": http.StatusBadRequest,
+					"msg":  "参数非法",
+				})
+			}
+			return
+		}
+		userId, ok := ctx.Get("uid")
+		if !ok {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  "用户未获取到",
+			})
+			return
+		}
+		t.UserID = userId.(int32)
+		err := biz.UploadInformation(t)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  "信息上传成功",
 		})
 	})
 	r.Run(":8016")

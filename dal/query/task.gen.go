@@ -28,7 +28,7 @@ func newTask(db *gorm.DB) task {
 	_task.UserID = field.NewInt32(tableName, "user_id")
 	_task.SchoolID = field.NewString(tableName, "school_id")
 	_task.StudentID = field.NewString(tableName, "student_id")
-	_task.SchoolAddress = field.NewString(tableName, "school_address")
+	_task.Address = field.NewString(tableName, "address")
 	_task.CreateTime = field.NewTime(tableName, "create_time")
 	_task.UpdateTime = field.NewTime(tableName, "update_time")
 	_task.DeleteTime = field.NewTime(tableName, "delete_time")
@@ -41,15 +41,15 @@ func newTask(db *gorm.DB) task {
 type task struct {
 	taskDo
 
-	ALL           field.Field
-	ID            field.Int32
-	UserID        field.Int32
-	SchoolID      field.String
-	StudentID     field.String
-	SchoolAddress field.String
-	CreateTime    field.Time
-	UpdateTime    field.Time
-	DeleteTime    field.Time
+	ALL        field.Field
+	ID         field.Int32
+	UserID     field.Int32
+	SchoolID   field.String
+	StudentID  field.String
+	Address    field.String
+	CreateTime field.Time
+	UpdateTime field.Time
+	DeleteTime field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -70,7 +70,7 @@ func (t *task) updateTableName(table string) *task {
 	t.UserID = field.NewInt32(table, "user_id")
 	t.SchoolID = field.NewString(table, "school_id")
 	t.StudentID = field.NewString(table, "student_id")
-	t.SchoolAddress = field.NewString(table, "school_address")
+	t.Address = field.NewString(table, "address")
 	t.CreateTime = field.NewTime(table, "create_time")
 	t.UpdateTime = field.NewTime(table, "update_time")
 	t.DeleteTime = field.NewTime(table, "delete_time")
@@ -95,7 +95,7 @@ func (t *task) fillFieldMap() {
 	t.fieldMap["user_id"] = t.UserID
 	t.fieldMap["school_id"] = t.SchoolID
 	t.fieldMap["student_id"] = t.StudentID
-	t.fieldMap["school_address"] = t.SchoolAddress
+	t.fieldMap["address"] = t.Address
 	t.fieldMap["create_time"] = t.CreateTime
 	t.fieldMap["update_time"] = t.UpdateTime
 	t.fieldMap["delete_time"] = t.DeleteTime
