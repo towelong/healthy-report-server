@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"github.com/towelong/healthy-report-server/biz"
+	"github.com/towelong/healthy-report-server/dal/model"
 	"github.com/towelong/healthy-report-server/db"
 	"github.com/towelong/healthy-report-server/module"
 	"github.com/towelong/healthy-report-server/server"
@@ -15,19 +17,23 @@ var wg sync.WaitGroup
 
 func init() {
 	db.Conn()
-	fmt.Println("init ..")
 }
 
 func task() {
-	jobs := []string{"19205116", "19205118", "19205133"}
-	for _, j := range jobs {
+	tasks, err := biz.FindTaskList()
+	if err != nil {
+		fmt.Println("没有进行中的任务")
+		return
+	}
+	for _, t := range tasks {
 		wg.Add(1)
-		go func(job string) {
-			r := module.NewHealthyReport(job, "4136013436", "江西省九江市共青城市江西农业大学南昌商学院")
+		go func(t *model.Task) {
+			// "4136013436" "江西省九江市共青城市江西农业大学南昌商学院"
+			r := module.NewHealthyReport(t.StudentID, t.SchoolID, t.Address)
 			err := r.Report()
 			fmt.Println(err)
 			wg.Done()
-		}(j)
+		}(t)
 	}
 	wg.Wait()
 }

@@ -78,6 +78,11 @@ func UploadInformation(t *Task) error {
 	return nil
 }
 
+func FindTaskList() ([]*model.Task, error) {
+	var q = query.Use(db.DB).Task
+	return q.Find()
+}
+
 func recordError(err error) {
 	if err != nil {
 		fmt.Printf("Error: %v", err)
