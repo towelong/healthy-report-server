@@ -6,9 +6,8 @@ import (
 	"github.com/towelong/healthy-report-server/db"
 )
 
-var q = query.Use(db.Conn()).User
-
 func Register() error {
+	var q = query.Use(db.DB).User
 	return q.Create(&model.User{
 		Username: "towelong",
 		Password: "123123123",

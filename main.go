@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"github.com/towelong/healthy-report-server/db"
 	"github.com/towelong/healthy-report-server/module"
 	"github.com/towelong/healthy-report-server/server"
 )
@@ -13,7 +14,7 @@ import (
 var wg sync.WaitGroup
 
 func init() {
-	// db.DB = db.Conn()
+	db.Conn()
 	fmt.Println("init ..")
 }
 
