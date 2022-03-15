@@ -32,5 +32,4 @@ func main() {
 	s.Every(1).Day().At("07:00").Do(task)
 	s.StartAsync()
 	server.Run()
-	task()
 }
