@@ -12,6 +12,11 @@ import (
 
 var wg sync.WaitGroup
 
+func init() {
+	// db.DB = db.Conn()
+	fmt.Println("init ..")
+}
+
 func task() {
 	jobs := []string{"19205116", "19205118", "19205133"}
 	for _, j := range jobs {
