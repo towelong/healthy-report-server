@@ -113,7 +113,7 @@ func Run() {
 		info, err := biz.FindUserInformation(uid)
 		if err != nil {
 			ctx.JSON(http.StatusOK, gin.H{
-				"code": http.StatusBadRequest,
+				"code": http.StatusNotFound,
 				"msg":  err.Error(),
 			})
 			return
