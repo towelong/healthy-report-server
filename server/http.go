@@ -99,5 +99,26 @@ func Run() {
 			"msg":  "信息上传成功",
 		})
 	})
+
+	r.GET("/information", middleware.JWT, func(ctx *gin.Context) {
+		userId, ok := ctx.Get("uid")
+		if !ok {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  "用户未获取到",
+			})
+			return
+		}
+		uid := userId.(int32)
+		info, err := biz.FindUserInformation(uid)
+		if err != nil {
+			ctx.JSON(http.StatusOK, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, info)
+	})
 	r.Run(":8016")
 }

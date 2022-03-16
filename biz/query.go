@@ -78,6 +78,16 @@ func UploadInformation(t *Task) error {
 	return nil
 }
 
+func FindUserInformation(id int32) (*model.Task, error) {
+	var q = query.Use(db.DB).Task
+	task, err := q.Where(q.UserID.Eq(id)).First()
+	if err != nil {
+		return nil, errors.New("无任务")
+	}
+	recordError(err)
+	return task, nil
+}
+
 func FindTaskList() ([]*model.Task, error) {
 	var q = query.Use(db.DB).Task
 	return q.Find()
