@@ -78,6 +78,19 @@ func UploadInformation(t *Task) error {
 	return nil
 }
 
+func EditUserInfomation(t *Task) error {
+	var q = query.Use(db.DB).Task
+	info, err := q.Where(q.UserID.Eq(t.UserID)).Updates(&model.Task{
+		SchoolID:  t.SchoolID,
+		StudentID: t.StudentID,
+		Address:   t.Address,
+	})
+	if err != nil || info.RowsAffected == 0 {
+		return errors.New("更新失败")
+	}
+	return nil
+}
+
 func FindUserInformation(id int32) (*model.Task, error) {
 	var q = query.Use(db.DB).Task
 	task, err := q.Where(q.UserID.Eq(id)).First()
