@@ -85,8 +85,12 @@ func EditUserInfomation(t *Task) error {
 		StudentID: t.StudentID,
 		Address:   t.Address,
 	})
-	if err != nil || info.RowsAffected == 0 {
+	if err != nil {
+		recordError(err)
 		return errors.New("更新失败")
+	}
+	if info.RowsAffected == 0 {
+		return nil
 	}
 	return nil
 }
@@ -95,9 +99,9 @@ func FindUserInformation(id int32) (*model.Task, error) {
 	var q = query.Use(db.DB).Task
 	task, err := q.Where(q.UserID.Eq(id)).First()
 	if err != nil {
+		recordError(err)
 		return nil, errors.New("无任务")
 	}
-	recordError(err)
 	return task, nil
 }
 
