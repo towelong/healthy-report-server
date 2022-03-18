@@ -9,3 +9,5 @@
 *.dll
 *.so
 *.dylib
+
+.env.production

@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/towelong/healthy-report-server/biz"
@@ -9,7 +10,11 @@ import (
 )
 
 func Run() {
+	if os.Getenv("MODE") == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 	r.Use(middleware.CORS)
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{

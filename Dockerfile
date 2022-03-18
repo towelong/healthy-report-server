@@ -8,6 +8,7 @@ RUN go env -w GO111MODULE=on \
 FROM alpine AS final
 WORKDIR /app
 COPY --from=builder /go/src/App /app/App
+COPY --from=builder /go/src/.env.production /app/App/.env.production
 RUN chmod a+xr -R /app/App
 EXPOSE 8016
-ENTRYPOINT ["/app/App"]
+ENTRYPOINT ["/app/App","-conf", "/app/App/.env.production"]

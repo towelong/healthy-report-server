@@ -1,11 +1,14 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"github.com/joho/godotenv"
 	"github.com/towelong/healthy-report-server/biz"
 	"github.com/towelong/healthy-report-server/dal/model"
 	"github.com/towelong/healthy-report-server/db"
@@ -13,10 +16,23 @@ import (
 	"github.com/towelong/healthy-report-server/server"
 )
 
-var wg sync.WaitGroup
+var (
+	wg  sync.WaitGroup
+	env string
+)
 
 func init() {
+	flag.StringVar(&env, "conf", ".env.development", "conf file, eg: -conf .env.development")
+}
+
+func main() {
+	flag.Parse()
+	if err := godotenv.Load(env); err != nil {
+		log.Fatalln("load config error...")
+	}
 	db.Conn()
+	cron()
+	server.Run()
 }
 
 func task() {
@@ -38,10 +54,9 @@ func task() {
 	wg.Wait()
 }
 
-func main() {
+func cron() {
 	l := time.FixedZone("CST", 8*3600)
 	s := gocron.NewScheduler(l)
 	s.Every(1).Day().At("07:00").Do(task)
 	s.StartAsync()
-	server.Run()
 }
