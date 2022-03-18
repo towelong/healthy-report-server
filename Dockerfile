@@ -1,7 +1,7 @@
 FROM golang:1.16.9 AS builder
 WORKDIR /go/src
 COPY . .
-RUN GOPROXY=https://goproxy.cn && CGO_ENABLED=0 go build -o App main.go
+RUN go env -w GOPROXY=https://goproxy.cn && CGO_ENABLED=0 go build -o App main.go
 
 FROM alpine AS final
 WORKDIR /app
