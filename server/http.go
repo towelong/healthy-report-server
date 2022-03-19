@@ -24,13 +24,12 @@ func Run() {
 
 	r.POST("/login", func(ctx *gin.Context) {
 		var u biz.User
-		if err := ctx.ShouldBindJSON(&u); err != nil {
-			if u.Username == "" || u.Password == "" {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"code": 400,
-					"msg":  "用户名或密码未填写",
-				})
-			}
+		ctx.ShouldBindJSON(&u)
+		if u.Username == "" || u.Password == "" {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": 400,
+				"msg":  "用户名或密码未填写",
+			})
 			return
 		}
 		token, err := biz.Login(u)
@@ -48,13 +47,12 @@ func Run() {
 
 	r.POST("/register", func(ctx *gin.Context) {
 		var u biz.User
-		if err := ctx.ShouldBindJSON(&u); err != nil {
-			if u.Username == "" || u.Password == "" {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"code": 400,
-					"msg":  "用户名或密码未填写",
-				})
-			}
+		ctx.ShouldBindJSON(&u)
+		if u.Username == "" || u.Password == "" {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": 400,
+				"msg":  "用户名或密码未填写",
+			})
 			return
 		}
 		err := biz.Register(u)
@@ -73,13 +71,12 @@ func Run() {
 
 	r.POST("/information", middleware.JWT, func(ctx *gin.Context) {
 		var t = &biz.Task{}
-		if err := ctx.ShouldBindJSON(t); err != nil {
-			if t.UserID == 0 || t.SchoolID == "" || t.StudentID == "" {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"code": http.StatusBadRequest,
-					"msg":  "参数非法",
-				})
-			}
+		ctx.ShouldBindJSON(t)
+		if t.SchoolID == "" || t.StudentID == "" || t.Address == "" {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  "参数非法",
+			})
 			return
 		}
 		userId, ok := ctx.Get("uid")
@@ -107,13 +104,12 @@ func Run() {
 
 	r.PUT("/information", middleware.JWT, func(ctx *gin.Context) {
 		var t = &biz.Task{}
-		if err := ctx.ShouldBindJSON(t); err != nil {
-			if t.UserID == 0 || t.SchoolID == "" || t.StudentID == "" {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"code": http.StatusBadRequest,
-					"msg":  "参数非法",
-				})
-			}
+		ctx.ShouldBindJSON(t)
+		if t.SchoolID == "" || t.StudentID == "" || t.Address == "" {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  "参数非法",
+			})
 			return
 		}
 		userId, ok := ctx.Get("uid")
