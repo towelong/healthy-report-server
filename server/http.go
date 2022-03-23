@@ -14,7 +14,7 @@ func Run() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.Default()
-	r.SetTrustedProxies(nil)
+	r.SetTrustedProxies([]string{"0.0.0.0/0", "::/0"})
 	r.Use(middleware.CORS)
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
