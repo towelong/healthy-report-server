@@ -63,7 +63,7 @@ func (h *HealthyReport) sign(cks []*http.Cookie) error {
 	formData.Add("gldd", "")
 	formData.Add("mqtw", "0")
 	formData.Add("mqtwxq", "")
-	formData.Add("zddlwz", "江西省九江市共青城市青年大道79号江西农业大学南昌商学院")
+	formData.Add("zddlwz", h.Address)
 	formData.Add("sddlwz", "")
 	formData.Add("bprovince", ad.Province)
 	formData.Add("bcity", ad.City)
