@@ -6,9 +6,10 @@ import (
 
 	"github.com/towelong/healthy-report-server/dal/model"
 	"github.com/towelong/healthy-report-server/dal/query"
-	"github.com/towelong/healthy-report-server/db"
 	"github.com/towelong/healthy-report-server/module"
 )
+
+var q = query.Q
 
 type User struct {
 	Username string `json:"username"`
@@ -23,8 +24,8 @@ type Task struct {
 }
 
 func Login(user User) (string, error) {
-	var q = query.Use(db.DB).User
-	u, err := q.Where(q.Username.Eq(user.Username)).First()
+	t := q.User
+	u, err := t.Where(t.Username.Eq(user.Username)).First()
 	if err != nil {
 		recordError(err)
 		return "", errors.New("用户未找到")
@@ -37,8 +38,8 @@ func Login(user User) (string, error) {
 }
 
 func Register(user User) error {
-	var q = query.Use(db.DB).User
-	us, _ := q.Where(q.Username.Eq(user.Username)).First()
+	do := q.User
+	us, _ := do.Where(do.Username.Eq(user.Username)).First()
 	if us != nil {
 		return errors.New("用户名已存在")
 	}
@@ -46,7 +47,7 @@ func Register(user User) error {
 		Username: user.Username,
 		Password: module.NewEncryption(module.WithPassword(user.Password)).EncodePassword(),
 	}
-	err := q.Create(&u)
+	err := do.Create(&u)
 	recordError(err)
 	if err != nil {
 		return errors.New("注册失败")
@@ -55,17 +56,17 @@ func Register(user User) error {
 }
 
 func FindUserById(id int) (*model.User, error) {
-	var q = query.Use(db.DB).User
-	return q.Where(q.ID.Eq(int32(id))).First()
+	u := q.User
+	return u.Where(u.ID.Eq(int32(id))).First()
 }
 
 func UploadInformation(t *Task) error {
-	var q = query.Use(db.DB).Task
-	task, _ := q.Where(q.StudentID.Eq(t.StudentID), q.SchoolID.Eq(t.SchoolID)).First()
+	ts := q.Task
+	task, _ := ts.Where(ts.StudentID.Eq(t.StudentID), ts.SchoolID.Eq(t.SchoolID)).First()
 	if task != nil {
 		return errors.New("该任务已存在")
 	}
-	err := q.Create(&model.Task{
+	err := ts.Create(&model.Task{
 		UserID:    t.UserID,
 		StudentID: t.StudentID,
 		SchoolID:  t.SchoolID,
@@ -79,8 +80,8 @@ func UploadInformation(t *Task) error {
 }
 
 func EditUserInfomation(t *Task) error {
-	var q = query.Use(db.DB).Task
-	info, err := q.Where(q.UserID.Eq(t.UserID)).Updates(&model.Task{
+	ts := q.Task
+	info, err := ts.Where(ts.UserID.Eq(t.UserID)).Updates(&model.Task{
 		SchoolID:  t.SchoolID,
 		StudentID: t.StudentID,
 		Address:   t.Address,
@@ -96,8 +97,8 @@ func EditUserInfomation(t *Task) error {
 }
 
 func FindUserInformation(id int32) (*model.Task, error) {
-	var q = query.Use(db.DB).Task
-	task, err := q.Where(q.UserID.Eq(id)).First()
+	ts := q.Task
+	task, err := ts.Where(ts.UserID.Eq(id)).First()
 	if err != nil {
 		recordError(err)
 		return nil, errors.New("无任务")
@@ -106,8 +107,8 @@ func FindUserInformation(id int32) (*model.Task, error) {
 }
 
 func FindTaskList() ([]*model.Task, error) {
-	var q = query.Use(db.DB).Task
-	return q.Find()
+	do := q.Task
+	return do.Find()
 }
 
 func recordError(err error) {

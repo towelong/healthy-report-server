@@ -11,6 +11,18 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	Q    = new(Query)
+	Task *task
+	User *user
+)
+
+func SetDefault(db *gorm.DB) {
+	*Q = *Use(db)
+	Task = &Q.Task
+	User = &Q.User
+}
+
 func Use(db *gorm.DB) *Query {
 	return &Query{
 		db:   db,

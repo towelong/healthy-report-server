@@ -1,5 +1,5 @@
 gen:
-	go run ./cmd/gen/.
+	go run ./cmd/gen/. -conf .env.development
 dev:
 	go run main.go
 prod:

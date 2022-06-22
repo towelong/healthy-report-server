@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/towelong/healthy-report-server/biz"
 	"github.com/towelong/healthy-report-server/dal/model"
+	"github.com/towelong/healthy-report-server/dal/query"
 	"github.com/towelong/healthy-report-server/db"
 	"github.com/towelong/healthy-report-server/module"
 	"github.com/towelong/healthy-report-server/server"
@@ -31,6 +32,11 @@ func main() {
 		log.Fatalln("load config error...")
 	}
 	db.Conn()
+	query.SetDefault(db.DB)
+	tasks, _ := biz.FindTaskList()
+	if tasks == nil {
+		fmt.Println("没有进行中的任务")
+	}
 	cron()
 	server.Run()
 }
