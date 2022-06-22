@@ -42,8 +42,8 @@ func main() {
 }
 
 func task() {
-	tasks, err := biz.FindTaskList()
-	if err != nil {
+	tasks, _ := biz.FindTaskList()
+	if tasks == nil {
 		fmt.Println("没有进行中的任务")
 		return
 	}
