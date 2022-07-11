@@ -29,7 +29,7 @@ func newUser(db *gorm.DB) user {
 	_user.Password = field.NewString(tableName, "password")
 	_user.CreateTime = field.NewTime(tableName, "create_time")
 	_user.UpdateTime = field.NewTime(tableName, "update_time")
-	_user.DeleteTime = field.NewTime(tableName, "delete_time")
+	_user.DeleteTime = field.NewField(tableName, "delete_time")
 
 	_user.fillFieldMap()
 
@@ -45,7 +45,7 @@ type user struct {
 	Password   field.String
 	CreateTime field.Time
 	UpdateTime field.Time
-	DeleteTime field.Time
+	DeleteTime field.Field
 
 	fieldMap map[string]field.Expr
 }
@@ -67,7 +67,7 @@ func (u *user) updateTableName(table string) *user {
 	u.Password = field.NewString(table, "password")
 	u.CreateTime = field.NewTime(table, "create_time")
 	u.UpdateTime = field.NewTime(table, "update_time")
-	u.DeleteTime = field.NewTime(table, "delete_time")
+	u.DeleteTime = field.NewField(table, "delete_time")
 
 	u.fillFieldMap()
 

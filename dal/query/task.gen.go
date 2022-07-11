@@ -31,7 +31,7 @@ func newTask(db *gorm.DB) task {
 	_task.Address = field.NewString(tableName, "address")
 	_task.CreateTime = field.NewTime(tableName, "create_time")
 	_task.UpdateTime = field.NewTime(tableName, "update_time")
-	_task.DeleteTime = field.NewTime(tableName, "delete_time")
+	_task.DeleteTime = field.NewField(tableName, "delete_time")
 
 	_task.fillFieldMap()
 
@@ -49,7 +49,7 @@ type task struct {
 	Address    field.String
 	CreateTime field.Time
 	UpdateTime field.Time
-	DeleteTime field.Time
+	DeleteTime field.Field
 
 	fieldMap map[string]field.Expr
 }
@@ -73,7 +73,7 @@ func (t *task) updateTableName(table string) *task {
 	t.Address = field.NewString(table, "address")
 	t.CreateTime = field.NewTime(table, "create_time")
 	t.UpdateTime = field.NewTime(table, "update_time")
-	t.DeleteTime = field.NewTime(table, "delete_time")
+	t.DeleteTime = field.NewField(table, "delete_time")
 
 	t.fillFieldMap()
 

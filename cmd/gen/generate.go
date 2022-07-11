@@ -29,12 +29,12 @@ func main() {
 	g.UseDB(db.Conn())
 
 	// generate all table from database
-	g.ApplyBasic(g.GenerateAllTable()...)
-	g.GenerateModel("user",
-		gen.FieldType("delete_time", "gorm.DeletedAt"),
-	)
-	g.GenerateModel("task",
-		gen.FieldType("delete_time", "gorm.DeletedAt"),
-	)
+	g.ApplyBasic(g.GenerateAllTable(gen.FieldType("delete_time", "gorm.DeletedAt"))...)
+	// g.GenerateModel("user",
+	// 	gen.FieldType("delete_time", "gorm.DeletedAt"),
+	// )
+	// g.GenerateModel("task",
+	// 	gen.FieldType("delete_time", "gorm.DeletedAt"),
+	// )
 	g.Execute()
 }
